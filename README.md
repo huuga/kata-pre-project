@@ -1,0 +1,1 @@
+# kata-pre-project
