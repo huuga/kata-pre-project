@@ -7,7 +7,7 @@ import javax.persistence.*;
 @AttributeOverride(name="id", column=@Column(name="user_id"))
 public class User {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
     @Column

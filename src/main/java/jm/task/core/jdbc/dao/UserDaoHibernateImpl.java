@@ -10,7 +10,6 @@ import java.util.List;
 public class UserDaoHibernateImpl implements UserDao {
 
     private String TABLE_NAME = "users";
-    private String hiberSeqFirstRec = "INSERT INTO hibernate_sequence (next_val) VALUES (1);";
 
     public UserDaoHibernateImpl() {
 
@@ -24,18 +23,11 @@ public class UserDaoHibernateImpl implements UserDao {
                 .append("name VARCHAR(20), ")
                 .append("last_name VARCHAR(30), ")
                 .append("age TINYINT);");
-        String createHiberSeq = "CREATE TABLE if NOT EXISTS hibernate_sequence (next_val BIGINT) engine=InnoDB;";
 
 
         try (Session session = Util.getSessionFactory().openSession()) {
             session.beginTransaction();
-
             session.createSQLQuery("CREATE TABLE if NOT EXISTS " + TABLE_NAME + tableContent).executeUpdate();
-            session.createSQLQuery(createHiberSeq).executeUpdate();
-            Query query = session.createSQLQuery("SELECT next_val FROM hibernate_sequence;");
-            if (query.list().size() == 0) {
-                session.createSQLQuery(hiberSeqFirstRec).executeUpdate();
-            }
             session.getTransaction();
 
         } catch (Exception ignored) {
@@ -49,7 +41,6 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = Util.getSessionFactory().openSession()) {
             session.beginTransaction();
             session.createSQLQuery("DROP TABLE if EXISTS " + TABLE_NAME + ";").executeUpdate();
-            session.createSQLQuery("DROP TABLE if EXISTS hibernate_sequence;").executeUpdate();
             session.getTransaction();
 
         } catch (Exception ignored) {
@@ -114,8 +105,6 @@ public class UserDaoHibernateImpl implements UserDao {
 
             tx = session.beginTransaction();
             session.createQuery("DELETE from User").executeUpdate();
-            session.createSQLQuery("TRUNCATE TABLE hibernate_sequence;").executeUpdate();
-            session.createSQLQuery(hiberSeqFirstRec).executeUpdate();
             tx.commit();
 
         } catch (Exception e) {
